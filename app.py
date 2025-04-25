@@ -57,7 +57,7 @@ def get_openai_response(user_input, sentiment):
     User said: "{user_input}"
     """
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model="gpt-3.5-turbo",  # Use "gpt-4" if you want GPT-4
         messages=[
             {"role": "system", "content": "You are a kind and empathetic mental health chatbot."},
             {"role": "user", "content": prompt}
