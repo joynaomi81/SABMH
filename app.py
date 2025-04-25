@@ -7,6 +7,9 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 import json
 
+# Set the page configuration as the first command
+st.set_page_config(page_title="Mental Health AI", page_icon="💬")
+
 # Add OpenAI API key input field
 if "openai_api_key" not in st.session_state:
     st.session_state.openai_api_key = ""
@@ -63,7 +66,6 @@ def get_openai_response(user_input, sentiment):
     return response['choices'][0]['message']['content']
 
 # Streamlit UI
-st.set_page_config(page_title="Mental Health AI", page_icon="💬")
 st.title("💬 Mental Health Companion (English Only)")
 st.markdown("Type how you're feeling. The AI will listen and respond with support and care 💛")
 
