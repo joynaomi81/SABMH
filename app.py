@@ -7,7 +7,20 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.preprocessing.text import tokenizer_from_json
 import json
 
-# Load the trained model
+# Add OpenAI API key input field
+if "openai_api_key" not in st.session_state:
+    st.session_state.openai_api_key = ""
+
+# Prompt user to input their OpenAI API key if not set
+if st.session_state.openai_api_key == "":
+    st.session_state.openai_api_key = st.text_input("Enter your OpenAI API Key", type="password")
+    if st.session_state.openai_api_key:
+        st.success("API Key successfully entered!")
+
+# Set OpenAI API key
+openai.api_key = st.session_state.openai_api_key
+
+# Load the trained deep learning model
 model = tf.keras.models.load_model("mental_health_model.h5")
 
 # Load tokenizer
@@ -15,15 +28,12 @@ with open("tokenizer.json") as f:
     data = json.load(f)
     tokenizer = tokenizer_from_json(data)
 
-# Set OpenAI API key
-openai.api_key = st.secrets["OPENAI_API_KEY"]
-
 # Preprocess input text
 def preprocess_text(text):
     text = text.lower()
     text = re.sub(r"[^a-zA-Z\s]", "", text)
     seq = tokenizer.texts_to_sequences([text])
-    padded = pad_sequences(seq, maxlen=100)  
+    padded = pad_sequences(seq, maxlen=100)  # Use the same maxlen as during training
     return padded
 
 # Predict sentiment
@@ -32,7 +42,7 @@ def predict_sentiment(text):
     prediction = model.predict(padded_input)[0]
     sentiment_index = np.argmax(prediction)
 
-    labels = ['Positive', 'Neutral', 'Negative'] 
+    labels = ['Positive', 'Neutral', 'Negative']  # Adjust based on your model's output
     return labels[sentiment_index]
 
 # Generate empathetic response using OpenAI
